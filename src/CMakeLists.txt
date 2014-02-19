@@ -7,6 +7,7 @@ cmake_minimum_required(VERSION 2.8)
 
 PROJECT (DM)
 
+find_package (OpenGL REQUIRED)
 add_subdirectory (window)
 
 include_directories ($(DM_SOURCE_DIR)/window)
