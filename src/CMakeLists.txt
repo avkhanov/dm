@@ -3,5 +3,14 @@
 #
 #
 
-PROJECT ( dm CXX )
+cmake_minimum_required(VERSION 2.8)
+
+PROJECT (DM)
+
+add_subdirectory (window)
+
+include_directories ($(DM_SOURCE_DIR)/window)
+link_directories ($(DM_BINARY_DIR)/window)
+
 add_executable (dm main.cpp)
+target_link_libraries (dm window)
