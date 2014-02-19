@@ -1,2 +1,2 @@
-add_library (window Window.cpp)
+add_library (window Window.cpp GLUTWindow.cpp)
 

@@ -9,11 +9,12 @@
 #define GLUTWINDOW_H_
 
 #include "Window.h"
+#include <stdlib.h>
 #include <GL/glut.h>
 
 class GLUTWindow: public Window {
 public:
-	GLUTWindow();
+	GLUTWindow(int x, int y, int width, int height, int argc, char** argv);
 	virtual ~GLUTWindow();
 };
 

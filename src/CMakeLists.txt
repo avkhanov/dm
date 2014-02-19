@@ -8,6 +8,12 @@ cmake_minimum_required(VERSION 2.8)
 PROJECT (DM)
 
 find_package (OpenGL REQUIRED)
+
+if (WIN32)
+else (WIN32)
+find_package (GLUT REQUIRED)
+endif (WIN32)
+
 add_subdirectory (window)
 
 include_directories ($(DM_SOURCE_DIR)/window)
