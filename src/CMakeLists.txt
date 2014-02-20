@@ -9,15 +9,21 @@ PROJECT (DM)
 
 find_package (OpenGL REQUIRED)
 
-if (WIN32)
-else (WIN32)
-find_package (GLUT REQUIRED)
-endif (WIN32)
-
 add_subdirectory (window)
 
-include_directories ($(DM_SOURCE_DIR)/window)
-link_directories ($(DM_BINARY_DIR)/window)
+include_directories (window ${OPENGL_INCLUDE_DIRS})
+link_directories (window)
 
-add_executable (dm main.cpp)
-target_link_libraries (dm window)
+set (LIBRARIES window ${OPENGL_LIBRARIES})
+
+if (WIN32)
+    set (MAIN_SRC WIN32 winmain.cpp)
+    set (LIBRARIES ${LIBRARIES} ws2_32)
+else (WIN32)
+    set (MAIN_SRC main.cpp)
+endif (WIN32)
+
+MESSAGE ("${LIBRARIES}")
+
+add_executable (dm ${MAIN_SRC})
+target_link_libraries (dm ${LIBRARIES})

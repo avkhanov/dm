@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configurationDescriptor version="90">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="src" name="0">
+      <df name="window">
+        <in>WIN32Window.cpp</in>
+        <in>WIN32Window.h</in>
+        <in>_WindowTemplate.cpp</in>
+        <in>_WindowTemplate.h</in>
+      </df>
+      <in>main.cpp</in>
+      <in>winmain.cpp</in>
+    </df>
+    <logicalFolder name="ExternalFiles"
+                   displayName="Important Files"
+                   projectFiles="false"
+                   kind="IMPORTANT_FILES_FOLDER">
+      <itemPath>src/CMakeLists.txt</itemPath>
+      <itemPath>src/../build/Makefile</itemPath>
+    </logicalFolder>
+  </logicalFolder>
+  <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
+  <sourceRootList>
+    <Elem>src</Elem>
+  </sourceRootList>
+  <projectmakefile>src/../build/Makefile</projectmakefile>
+  <confs>
+    <conf name="Default" type="0">
+      <toolsSet>
+        <compilerSet>VCC4N|VCC4N</compilerSet>
+        <dependencyChecking>false</dependencyChecking>
+        <rebuildPropChanged>false</rebuildPropChanged>
+      </toolsSet>
+      <codeAssistance>
+      </codeAssistance>
+      <makefileType>
+        <makeTool>
+          <buildCommandWorkingDir>build</buildCommandWorkingDir>
+          <buildCommand>MSBuild.exe ALL_BUILD.vcxproj</buildCommand>
+          <cleanCommand></cleanCommand>
+          <executablePath>build/Debug/dm.exe</executablePath>
+        </makeTool>
+      </makefileType>
+      <folder path="0/window">
+        <ccTool>
+          <incDir>
+            <pElem>src/window</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="src/main.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/window/WIN32Window.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/window/WIN32Window.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/window/_WindowTemplate.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/window/_WindowTemplate.h" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/winmain.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+    </conf>
+  </confs>
+</configurationDescriptor>
