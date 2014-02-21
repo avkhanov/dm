@@ -18,13 +18,23 @@ class WIN32Window : public _WindowTemplate {
         HINSTANCE m_hPrevInstance;
         LPSTR m_lpCmdLine;
         int m_nShowCmd;
+        
+        int m_width;
+        int m_height;
+        int m_x;
+        int m_y;
+    
     public:
-        Window(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
+        WIN32Window(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
         void setWidth(int width);
         void setHeight(int height);
         void setX(int x);
         void setY(int y);
         void show();
+        int getWidth();
+        int getHeight();
+        int getX();
+        int getY();
 };
 
 #endif	/* WIN32WINDOW_H */
