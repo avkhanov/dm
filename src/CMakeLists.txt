@@ -14,7 +14,7 @@ add_subdirectory (window)
 include_directories (window ${OPENGL_INCLUDE_DIRS})
 link_directories (window)
 
-set (LIBRARIES window ${OPENGL_LIBRARIES})
+set (LIBRARIES window ${OPENGL_LIBRARIES} ${OPENGL_glu_LIBRARY})
 
 if (WIN32)
     set (MAIN_SRC WIN32 winmain.cpp)

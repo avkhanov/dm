@@ -10,7 +10,7 @@
 #include "window/WIN32Window.h"
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
-    Window* w = new Window(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
+    WIN32Window* w = new Window(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
     w->show();
     return 0;
 }

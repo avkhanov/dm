@@ -1,11 +1,10 @@
 #include <iostream>
-#include "window/Window.h"
-#include "window/GLUTWindow.h"
-
+#include "window/LinuxWindow.h"
 using namespace std;
 
 int main(int argc, char** argv) {
 	cout << "HELLO WORLD!!!" << endl;
-	GLUTWindow* w = new GLUTWindow(0, 0, 640, 480, argc, argv);
+        LinuxWindow* w = new LinuxWindow();
+        w->show();
 	return 0;
 }

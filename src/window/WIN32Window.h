@@ -11,7 +11,7 @@
 #include "_WindowTemplate.h"
 #include <windows.h>
 
-class Window : public _WindowTemplate {
+class WIN32Window : public _WindowTemplate {
     private:
         static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
         HINSTANCE m_hInstance;
