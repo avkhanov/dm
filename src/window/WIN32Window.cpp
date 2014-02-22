@@ -5,12 +5,19 @@
 using namespace std;
 
 HDC WIN32Window::device_context;
+HWND WIN32Window::window_handle;
+bool WIN32Window::instanced = false;
 
 WIN32Window::WIN32Window(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+    if(WIN32Window::instanced) {
+        throw "Only one window may be open at once";
+    }
+    
     m_hInstance = hInstance;
     m_hPrevInstance = hPrevInstance;
     m_lpCmdLine = lpCmdLine;
     m_nShowCmd = nShowCmd;
+    WIN32Window::instanced = true;
 }
 
 void WIN32Window::setWidth(int width) {
@@ -45,6 +52,11 @@ int WIN32Window::getY() {
     return m_y;
 }
 
+WIN32Window::~WIN32Window() {
+    close();
+    WIN32Window::instanced = false;
+}
+
 void WIN32Window::show() {
     MSG msg          = {0};
     WNDCLASS wc      = {0}; 
@@ -55,10 +67,17 @@ void WIN32Window::show() {
     wc.style = CS_OWNDC;
     if( !RegisterClass(&wc) )
             return;
-    HWND h = CreateWindow(wc.lpszClassName,"DM",WS_OVERLAPPEDWINDOW|WS_VISIBLE,0,0,640,480,0,0,m_hInstance,0);
+    WIN32Window::window_handle = CreateWindow(wc.lpszClassName,"DM",WS_OVERLAPPEDWINDOW|WS_VISIBLE,0,0,640,480,0,0,m_hInstance,0);
+    
+    while( GetMessage( &msg, NULL, 0, 0 ) > 0 ) {
+        DispatchMessage( &msg );
+    }
+}
 
-    while( GetMessage( &msg, NULL, 0, 0 ) > 0 )
-            DispatchMessage( &msg );
+void WIN32Window::close() {
+    if(WIN32Window::instanced) {
+        SendMessage(WIN32Window::window_handle, WM_CLOSE, 0, 0);
+    }
 }
 
 LRESULT CALLBACK WIN32Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {

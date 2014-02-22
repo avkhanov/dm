@@ -10,11 +10,12 @@ PROJECT (DM)
 find_package (OpenGL REQUIRED)
 
 add_subdirectory (window)
+add_subdirectory (renderer)
 
 include_directories (window ${OPENGL_INCLUDE_DIRS})
-link_directories (window)
+link_directories (window renderer)
 
-set (LIBRARIES window ${OPENGL_LIBRARIES} ${OPENGL_glu_LIBRARY})
+set (LIBRARIES window renderer ${OPENGL_LIBRARIES} ${OPENGL_glu_LIBRARY})
 
 if (WIN32)
     set (MAIN_SRC WIN32 winmain.cpp)
@@ -22,8 +23,6 @@ if (WIN32)
 else (WIN32)
     set (MAIN_SRC main.cpp)
 endif (WIN32)
-
-MESSAGE ("${LIBRARIES}")
 
 add_executable (dm ${MAIN_SRC})
 target_link_libraries (dm ${LIBRARIES})
