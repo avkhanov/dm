@@ -25,6 +25,7 @@ class WIN32Window : public _WindowTemplate {
         int m_y;
     
     public:
+        static HDC device_context;
         WIN32Window(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd);
         void setWidth(int width);
         void setHeight(int height);

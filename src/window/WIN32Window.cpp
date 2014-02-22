@@ -4,6 +4,8 @@
 #include <iostream>
 using namespace std;
 
+HDC WIN32Window::device_context;
+
 WIN32Window::WIN32Window(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
     m_hInstance = hInstance;
     m_hPrevInstance = hPrevInstance;
@@ -81,13 +83,13 @@ LRESULT CALLBACK WIN32Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
                     0, 0, 0
             };
 
-            HDC ourWindowHandleToDeviceContext = GetDC(hWnd);
+            WIN32Window::device_context = GetDC(hWnd);
 
-            int pixelFormat = ChoosePixelFormat(ourWindowHandleToDeviceContext, &pfd); 
-            SetPixelFormat(ourWindowHandleToDeviceContext, pixelFormat, &pfd);
+            int pixelFormat = ChoosePixelFormat(WIN32Window::device_context, &pfd); 
+            SetPixelFormat(WIN32Window::device_context, pixelFormat, &pfd);
 
-            HGLRC gl_context = wglCreateContext(ourWindowHandleToDeviceContext);
-            wglMakeCurrent (ourWindowHandleToDeviceContext, gl_context);
+            HGLRC gl_context = wglCreateContext(WIN32Window::device_context);
+            wglMakeCurrent (WIN32Window::device_context, gl_context);
 
             WIN32Window::m_setup_func();
         }
@@ -98,6 +100,7 @@ LRESULT CALLBACK WIN32Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
         }
         default: {
             WIN32Window::m_render_func(NULL);
+            SwapBuffers(WIN32Window::device_context);
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
     }
