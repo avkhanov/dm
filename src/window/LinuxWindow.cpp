@@ -28,6 +28,26 @@ void LinuxWindow::setY(int y) {
     
 }
 
+void LinuxWindow::close() {
+    
+}
+
+int LinuxWindow::getWidth() {
+    return 0;
+}
+
+int LinuxWindow::getHeight() {
+    return 0;
+}
+
+int LinuxWindow::getX() {
+    return 0;
+}
+
+int LinuxWindow::getY() {
+    return 0;
+}
+
 void LinuxWindow::show() {
     Display* dpy;
     Window root;
@@ -69,7 +89,7 @@ void LinuxWindow::show() {
     glc = glXCreateContext(dpy, vi, NULL, GL_TRUE);
     glXMakeCurrent(dpy, win, glc);
     
-    glEnable(GL_DEPTH_TEST);
+    LinuxWindow::m_setup_func();
     
     while(1) {
         XNextEvent(dpy, &xev);
@@ -77,6 +97,7 @@ void LinuxWindow::show() {
         if(xev.type == Expose) {
                 XGetWindowAttributes(dpy, win, &gwa);
                 glViewport(0, 0, gwa.width, gwa.height);
+                LinuxWindow::m_render_func(NULL);
                 glXSwapBuffers(dpy, win);
         } else if(xev.type == KeyPress) {
                 glXMakeCurrent(dpy, None, NULL);

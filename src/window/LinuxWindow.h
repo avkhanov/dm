@@ -17,6 +17,11 @@ public:
         void setX(int x);
         void setY(int y);
         void show();
+        void close();
+        int getWidth();
+        int getHeight();
+        int getX();
+        int getY();
 private:
 
 };
