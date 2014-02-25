@@ -10,14 +10,19 @@
 #include <GL/GLU.h>
 #include "window/WIN32Window.h"
 #include "renderer/renderer.h"
+#include "map/Map.h"
 #include <iostream>
 using namespace std;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
-    WIN32Window* w = new WIN32Window(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
+    /*WIN32Window* w = new WIN32Window(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
     w->setSetupFunc(renderer_setup);
     w->setRenderFunc(renderer);
-    w->show();
+    w->show();*/
+    Map* m = new Map();
+    m->generate();
+    m->print();
+    
     return 0;
 }
 

@@ -11,11 +11,12 @@ find_package (OpenGL REQUIRED)
 
 add_subdirectory (window)
 add_subdirectory (renderer)
+add_subdirectory (map)
 
-include_directories (window ${OPENGL_INCLUDE_DIRS})
-link_directories (window renderer)
+include_directories (window renderer map ${OPENGL_INCLUDE_DIRS})
+#link_directories (window renderer map)
 
-set (LIBRARIES window renderer ${OPENGL_LIBRARIES} ${OPENGL_glu_LIBRARY})
+set (LIBRARIES window renderer map ${OPENGL_LIBRARIES})
 
 if (WIN32)
     set (MAIN_SRC WIN32 winmain.cpp)
