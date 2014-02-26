@@ -19,8 +19,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     w->setSetupFunc(renderer_setup);
     w->setRenderFunc(renderer);
     w->show();*/
-    Map* m = new Map();
+    Map* m = new Map(50, 0.1f);
     m->generate();
+    //m->generate(1393377573);
+    //m->generate(1393376962);
     m->print();
     
     return 0;

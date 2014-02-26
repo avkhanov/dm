@@ -11,6 +11,10 @@ inline int randInt(int max) {
     return (rand() % max) + 1;
 }
 
+inline int randInt(int min, int max) {
+    return (rand() % (max - min)) + min;
+}
+
 bool probTest(float success_chance) {
     if(success_chance > 1.0) {
         throw "Probability of success cannot be higher than 1";
@@ -25,108 +29,164 @@ bool probTest(float success_chance) {
     }
 }
 
-Map::Map() {
+Map::Map(int complexity, float density) {
+    m_complexity = complexity;
+    m_density = density;
 }
 
-Tile* Map::add_tile(int x, int y) {
-    Tile* ret = new Tile(x, y);
-    tile_list.push_back(ret);
-    return ret;
-}
-
-void Map::generate_rect(Tile* start) {
-    int width = randInt(Map::RECT_DIM);
-    int height = randInt(Map::RECT_DIM);
-    Tile* curx = start;
-    Tile* cury = start;
-    
-    bool east = start->east == NULL;
-    bool west = start->west == NULL;
-    bool north = start->north == NULL;
-    bool south = start->south == NULL;
-    
-    for(int y = 0; y < height; y++) {
-        for(int x = 0; x < width; x++) {
-            if(east) {
-                if(curx->x + 1 > max_east) {
-                    max_east = curx->x + 1;
-                }
-                
-                curx->east = add_tile(curx->x + 1, curx->y);
-                curx = curx->east;
-            } else if(west) {
-                if(curx->x - 1 < max_west) {
-                    max_west = curx->x - 1;
-                }
-                
-                curx->west = add_tile(curx->x - 1, curx->y);
-                curx = curx->west;
-            }
-        }
-        
-        if(north) {
-            if(cury->y + 1 > max_north) {
-                max_north = cury->y + 1;
-            }
-            
-            cury->north = add_tile(cury->x, cury->y + 1);
-            cury = cury->north;
-        } else if(south) {
-            if(cury->y - 1 < max_south) {
-                max_south = cury->y - 1;
-            }
-            
-            cury->south = add_tile(cury->x, cury->y - 1);
-            cury = cury->south;
-        }
-        
-        curx = cury;
-    }
-}
-
-void Map::generate(long seed) {
-    m_seed = seed;
+void Map::generate(unsigned int seed) {
+    this->seed = seed;
     srand(seed);
-    m_start_tile = m_exit_tile = add_tile(0, 0);
+    //std::cout << "SEED: " << this->seed << std::endl;
     
-    generate_rect(m_start_tile);
-    generate_rect(m_start_tile);
+    int area = int(float(m_complexity) / m_density);
+    width = randInt(int(float(area) * 0.05), int(float(area) * 0.15));
+    height = int(ceil(double(area) / double(width)));
+    
+    map = new Tile*[width * height];
+    std::deque<Block*> blocks;
+    
+    for(int i = 0; i < width * height; i++) {
+        map[i] = NULL;
+    }
+    
+    for(int i = 0; i < m_complexity; i++) {
+        bool redo = false;
+        int redos = 0;
+        
+        do {
+            int x = randInt(width) - 1;
+            int y = randInt(height) - 1;
+            //std::cout << x << " " << y << std::endl;
+            
+            if(map[y * width + x] != NULL) {
+                redo = true;
+                redos++;
+            } else {
+                map[y * width + x] = new Tile(x, y);
+                Block* block = new Block();
+                block->tiles.push_back(map[y * width + x]);
+                blocks.push_back(block);
+                
+                redo = false;
+            }
+        } while(redo && redos < area);
+    }
+    
+    int size = blocks.size();
+    //for(int i = 0; i < size - 1; i++) {
+    while(blocks.size() > 1) {
+        Block* b = blocks.front();
+        blocks.pop_front();
+        
+        int smallest_distance = -1;
+        int other_block = 0;
+        int this_block_idx = 0;
+        int other_block_idx = 0;
+        
+        for(unsigned int j = 0; j < blocks.size(); j++) {
+            Block* test = blocks[j];
+            for(unsigned int b1 = 0; b1 < b->tiles.size(); b1++) {
+                for(unsigned int b2 = 0; b2 < test->tiles.size(); b2++) {
+                    int dist = Map::gridDistance(b->tiles[b1]->x, b->tiles[b1]->y, test->tiles[b2]->x, test->tiles[b2]->y);
+                    if(dist < smallest_distance || smallest_distance == -1) {
+                        smallest_distance = dist;
+                        other_block = j;
+                        this_block_idx = b1;
+                        other_block_idx = b2;
+                    }
+                }
+            }
+        }
+        
+        Block* ob = blocks[other_block];
+        blocks.erase(blocks.begin() + other_block);
+        
+        for(unsigned int i = 0; i < ob->tiles.size(); i++) {
+            b->tiles.push_back(ob->tiles[i]);
+        }
+                
+        Tile* t1 = b->tiles[this_block_idx];
+        Tile* t2 = ob->tiles[other_block_idx];
+        int north_south = t2->y - t1->y;
+        int east_west = t2->x - t1->x;
+        int ns_dir = north_south == 0 ? 0 : (north_south / abs(north_south));
+        int ew_dir = east_west == 0 ? 0 : (east_west / abs(east_west));
+        
+        Tile* cur_tile = t1;
+        
+        //std::cout << "(" << t1->x << "," << t1->y << ") to (" << t2->x << "," << t2->y << ") RIGHT: " << east_west << " DOWN: " << north_south << " " << smallest_distance << std::endl;
+        //std::cout << "EW: " << ew_dir << " NS: " << ns_dir << std::endl;
+        while(north_south != 0 || east_west != 0) {
+            bool ns = probTest(0.5); //should we go north-south?
+            //std::cout << "Going north-south? " << ns << std::endl;
+            if((ns || east_west == 0) && north_south != 0) {
+                //std::cout << "We are going north-south..." << std::endl;
+                int index = (cur_tile->y + ns_dir) * width + cur_tile->x;
+                //std::cout << "going to (" << cur_tile->x << "," << cur_tile->y + ns_dir << ")" << std::endl;
+                if(map[index] == NULL) {
+                    map[index] = new Tile(cur_tile->x, cur_tile->y + ns_dir);
+                    b->tiles.push_back(map[index]);
+                }
+                cur_tile = map[index];
+                north_south -= ns_dir;
+            } else if((!ns || north_south == 0) && east_west != 0) {
+                //std::cout << "We are going east-west..." << std::endl;
+                int index = cur_tile->y * width + cur_tile->x + ew_dir;
+                //std::cout << "going to (" << cur_tile->x + ew_dir << "," << cur_tile->y << ")" << std::endl;
+                if(map[index] == NULL) {
+                    map[index] = new Tile(cur_tile->x + ew_dir, cur_tile->y);
+                    b->tiles.push_back(map[index]);
+                }
+                cur_tile = map[index];
+                east_west -= ew_dir;
+            }
+        }
+        
+        delete ob;
+        blocks.push_back(b);
+    }
+    
+    //std::cout << width << " " << height << " " << blocks.size() << std::endl;
 }
 
 void Map::generate() {
-    generate((long)time(NULL));
+    generate((unsigned int)(time(NULL)));
 }
 
 void Map::print() {
-    int x_offset = -max_west;
-    int y_offset = -max_south;
-    int height = max_north - max_south;
-    int width = max_east - max_west;
-    
-    std::cout << height << " " << width << std::endl;
-    
-    bool* array = new bool[width * height];
-    //std::cout << "DIM: " << width * height << " " << x_offset << " " << y_offset << std::endl;
-    
-    std::vector<Tile*>::iterator i;
-    for(i = tile_list.begin(); i != tile_list.end(); i++) {
-        int x = (*i)->x + x_offset;
-        int y = (*i)->y + y_offset;
-        //std::cout << x << " " << y << " " << (y*width+x) << std::endl;
-        array[y * width + x] = true;
+    if(map == NULL) {
+        return;
     }
     
+    std::cout << "+";
+    for(int x = 0; x < width; x++) {
+        std::cout << "-";
+    }
+    std::cout << "+" << std::endl;
+    
     for(int y = 0; y < height; y++) {
+        std::cout << "|";
+        
         for(int x = 0; x < width; x++) {
-            std::cout << x << " " << y << " " << (y*width+x) << "/" << (width * height) << std::endl;
-            if(array[y * width + x]) {
+            if(map[y * width + x] != NULL) {
                 std::cout << "*";
             } else {
                 std::cout << " ";
             }
         }
-        std::cout << std::endl;
+        
+        std::cout << "|" << std::endl;
     }
     
-    std::cout << width << " " << height << std::endl;
+    std::cout << "+";
+    for(int x = 0; x < width; x++) {
+        std::cout << "-";
+    }
+    std::cout << "+" << std::endl;
+    std::cout << std::endl << "W:" << width << " H:" << height << " SEED:" << seed << std::endl;
+}
+
+int Map::gridDistance(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
 }

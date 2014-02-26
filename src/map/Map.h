@@ -10,7 +10,9 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <cmath>
 #include <vector>
+#include <deque>
 #include <iostream>
 #include "Tile.h"
 
@@ -19,28 +21,20 @@ bool probTest(float success_chance);
 
 class Map {
 private:
-    static const int RECT_DIM = 10;
-    int m_width = 0;
-    int m_height = 0;
-    int m_start_y = 0;
-    
-    int max_north = 0;
-    int max_south = 0;
-    int max_east = 0;
-    int max_west = 0;
-    
-    long m_seed = 0;
-    
-    Tile* m_start_tile = NULL;
-    Tile* m_exit_tile = NULL;
-    std::vector<Tile*> tile_list;
-    
-    Tile* add_tile(int x, int y);
-    void generate_rect(Tile* start);
-    
+    class Block {
+    public:
+        std::vector<Tile*> tiles;
+    };
+    float m_density; // nodes per Area
+    int m_complexity; // Number of nodes
+    Tile** map = NULL;
+    int width = 0;
+    int height = 0;
+    unsigned int seed;
 public:
-    Map();
-    void generate(long seed);
+    Map(int complexity, float density);
+    static int gridDistance(int x1, int y1, int x2, int y2);
+    void generate(unsigned int seed);
     void generate();
     void print();
 };
