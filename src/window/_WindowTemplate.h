@@ -8,13 +8,16 @@
 #ifndef _WINDOWTEMPLATE_H
 #define	_WINDOWTEMPLATE_H
 
+#include "../map/Map.h"
+
 class _WindowTemplate {
 protected:
     static void (*m_setup_func)();
-    static void (*m_render_func)(void*);
+    static void (*m_render_func)(Map* map);
+    static Map* m_map;
 private:
     static void default_setup_func();
-    static void default_render_func(void*);
+    static void default_render_func(Map* map);
 public:
     _WindowTemplate();
     virtual void setWidth(int width) = 0;
@@ -27,8 +30,9 @@ public:
     virtual int getHeight() = 0;
     virtual int getX() = 0;
     virtual int getY() = 0;
+    void attachMap(Map* map);
     void setSetupFunc(void (*setup_func)());
-    void setRenderFunc(void (*render_func)(void* data));
+    void setRenderFunc(void (*render_func)(Map* map));
 };
 
 #endif	/* _WINDOWTEMPLATE_H */

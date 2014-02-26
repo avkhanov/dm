@@ -9,7 +9,7 @@
 #define	RENDERER_H
 
 void renderer_setup();
-void renderer(void* data);
+void renderer(Map* map);
 
 #endif	/* RENDERER_H */
 

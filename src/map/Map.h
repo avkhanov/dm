@@ -27,11 +27,11 @@ private:
     };
     float m_density; // nodes per Area
     int m_complexity; // Number of nodes
+    unsigned int seed;
+public:
     Tile** map = NULL;
     int width = 0;
     int height = 0;
-    unsigned int seed;
-public:
     Map(int complexity, float density);
     static int gridDistance(int x1, int y1, int x2, int y2);
     void generate(unsigned int seed);

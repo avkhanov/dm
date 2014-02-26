@@ -15,15 +15,16 @@
 using namespace std;
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd ) {
-    /*WIN32Window* w = new WIN32Window(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
-    w->setSetupFunc(renderer_setup);
-    w->setRenderFunc(renderer);
-    w->show();*/
     Map* m = new Map(50, 0.1f);
     m->generate();
-    //m->generate(1393377573);
-    //m->generate(1393376962);
-    m->print();
+    
+    WIN32Window* w = new WIN32Window(hInstance, hPrevInstance, lpCmdLine, nShowCmd);
+    w->setSetupFunc(renderer_setup);
+    w->setRenderFunc(renderer);
+    w->attachMap(m);
+    w->setWidth(680);
+    w->setHeight(480);
+    w->show();
     
     return 0;
 }

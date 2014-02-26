@@ -67,7 +67,7 @@ void WIN32Window::show() {
     wc.style = CS_OWNDC;
     if( !RegisterClass(&wc) )
             return;
-    WIN32Window::window_handle = CreateWindow(wc.lpszClassName,"DM",WS_OVERLAPPEDWINDOW|WS_VISIBLE,0,0,640,480,0,0,m_hInstance,0);
+    WIN32Window::window_handle = CreateWindow(wc.lpszClassName,"DM",WS_OVERLAPPEDWINDOW|WS_VISIBLE,0,0,m_width,m_height,0,0,m_hInstance,0);
     
     while( GetMessage( &msg, NULL, 0, 0 ) > 0 ) {
         DispatchMessage( &msg );
@@ -118,7 +118,7 @@ LRESULT CALLBACK WIN32Window::WndProc(HWND hWnd, UINT message, WPARAM wParam, LP
             PostQuitMessage(0);
         }
         default: {
-            WIN32Window::m_render_func(NULL);
+            WIN32Window::m_render_func(WIN32Window::m_map);
             SwapBuffers(WIN32Window::device_context);
             return DefWindowProc(hWnd, message, wParam, lParam);
         }
